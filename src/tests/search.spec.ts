@@ -1,11 +1,11 @@
-import { link } from "fs";
-import { chromium, Browser } from "playwright";
 import { expect } from "playwright/test";
 import { test } from "../fixtures";
 
 test.describe("Search Functionality Tests", () => {
   test.beforeEach(async ({ wikiPage }) => {
-    await wikiPage.visitMainPage();
+    await test.step("navigate to the main page", async () => {
+      await wikiPage.visitMainPage();
+    });
   });
 
   test("should display relevant articles for a valid search term", async ({
@@ -13,10 +13,11 @@ test.describe("Search Functionality Tests", () => {
   }) => {
     const expectedSearchWord = "Albert";
 
-    await wikiPage.searchBar.searchForItem(expectedSearchWord);
-
-    test.step("check that links are valid", async () => {
-      expect(
+    await test.step(`Seacrh for test word "${expectedSearchWord}"`, async () => {
+      await wikiPage.searchBar.searchForItem(expectedSearchWord);
+    });
+    await test.step("check that links are valid", async () => {
+      await expect(
         wikiPage.resultPage(expectedSearchWord).searchPageHeader
       ).toBeVisible();
       expect(
@@ -31,12 +32,14 @@ test.describe("Search Functionality Tests", () => {
     wikiPage,
   }) => {
     const expectedSearchWord = "Adam Ondra";
-    await wikiPage.searchBar.searchForItem(expectedSearchWord);
-    test.step("check that article has correct title and url", async () => {
-      expect(
+    await test.step(`Seacrh for test word "${expectedSearchWord}"`, async () => {
+      await wikiPage.searchBar.searchForItem(expectedSearchWord);
+    });
+    await test.step("check that article has correct title and url", async () => {
+      await expect(
         wikiPage.resultPage(expectedSearchWord).searchPageHeader
       ).toBeVisible();
-      expect(await page.url()).toContain(
+      await expect(await page.url()).toContain(
         expectedSearchWord.split(" ").join("_")
       );
     });
@@ -48,9 +51,11 @@ test.describe("Search Functionality Tests", () => {
     const expectedSearchWord = "Wroclaw";
     const partialWord = expectedSearchWord.slice(0, 4);
 
-    await wikiPage.searchBar.fillSearch(partialWord);
+    await test.step(`Type "${expectedSearchWord}" into searchbar`, async () => {
+      await wikiPage.searchBar.fillSearch(partialWord);
+    });
 
-    test.step("check that links contains whe initial word", async () => {
+    await test.step("check that links contains whe initial word", async () => {
       for (const dropdownLink of await wikiPage.searchBar.dropdownResults.allTextContents()) {
         expect(dropdownLink).toContain(expectedSearchWord);
       }
@@ -63,11 +68,32 @@ test.describe("Search Functionality Tests", () => {
   }) => {
     const expectedSearchWord = "NonExistentTopic";
 
-    await wikiPage.searchBar.searchForItem(expectedSearchWord);
+    await test.step(`Seacrh for non-existent article "${expectedSearchWord}"`, async () => {
+      await wikiPage.searchBar.searchForItem(expectedSearchWord);
+    });
+    await test.step("check that page no results displayed", async () => {
+      await expect(page.getByText('The page "NonExistentTopic"')).toBeVisible();
+      await expect(page.getByText("does not exist")).toBeVisible();
+    });
+  });
 
-    test.step("check that page no results displayed", async () => {
-      expect(await page.getByText('The page "NonExistentTopic"')).toBeVisible();
-      expect(await page.getByText("does not exist")).toBeVisible();
+  test("should search show the result from nonEnglish language ", async ({
+    wikiPage,
+    page,
+  }) => {
+    const expectedSearchWord = "Koln";
+    const expectedWordInEnglish = "Cologne";
+
+    await test.step(`Type "${expectedSearchWord}" into searchbar and wait till redirect`, async () => {
+      await wikiPage.searchBar.searchForItem(expectedSearchWord);
+      await page.waitForURL(`**/${expectedWordInEnglish}`);
+    });
+
+    await test.step("check that article has correct title and url", async () => {
+      await expect(
+        wikiPage.resultPage(expectedWordInEnglish).searchPageHeader
+      ).toBeVisible();
+      await expect(page.url()).toContain(expectedWordInEnglish);
     });
   });
 });

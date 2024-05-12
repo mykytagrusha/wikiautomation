@@ -1,13 +1,14 @@
 import { Page } from "playwright";
 
 export const createSearchBar = (page: Page) => {
+  const searchContainer = page.locator("div#p-search");
   const searchForItem = async (searchTerm: string) => {
     await fillSearch(searchTerm);
-    await page.getByPlaceholder("Search Wikipedia").press("Enter");
+    await page.getByRole("button", { name: "Search" }).click();
   };
 
-  const fillSearch = (searchTerm: string) => {
-    page.getByPlaceholder("Search Wikipedia").fill(searchTerm);
+  const fillSearch = async (searchTerm: string) => {
+    await page.getByPlaceholder("Search Wikipedia").fill(searchTerm);
   };
 
   const dropdownResults = page
