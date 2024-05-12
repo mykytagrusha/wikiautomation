@@ -2,7 +2,6 @@
 ## Test cases description
 Tests cases are placed [here](https://docs.google.com/document/d/1TP_CWfhmewxIf1AjNOHKviSSc6PN6ZM1J0dzIcBmAzU/edit?usp=sharing)
 
-
 ## How to run tests
 
 ### Locally
@@ -40,19 +39,3 @@ docker build -t wiki-automation .
 ```sh
 docker run -it wiki-automation npm run test
 ```
-
-
-execute image   docker run -it playwright-docker:latest npm run test
-copy reports    docker cp e56f87ea5c8c:/app/playwright-report ~/Repos/WikiAutomation
-
-docker run -it playwright-docker:latest npm run test-html-report -v $(pwd):/reports cp /app/playwright-report /reports
-
-
--v $(pwd):/reports test cp /app/playwright-report /reports
-
-
-docker run -it playwright-docker:latest  npm run test-html-report -v $(pwd):/reports cp /app/playwright-report /reports
-
-
-
-docker run -i -v ${PWD}/app:/app -it playwright-docker:latest
