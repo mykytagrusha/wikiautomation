@@ -1,0 +1,4 @@
+build image     docker build -t playwright-docker .
+execute image   docker run -it playwright-docker:latest npm run test
+copy reports    docker cp e56f87ea5c8c:/app/playwright-report ~/Repos/WikiAutomation
+execute via cmd docker run -it --rm --ipc=host -p 9323:9323 playwright-docker:latest /bin/bash
