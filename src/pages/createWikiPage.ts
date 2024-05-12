@@ -7,7 +7,7 @@ import { createResultPage } from "./createResultPage";
 export const createWikiPage = (page: Page) => {
   const basePage = createBasePage(page);
   const visitMainPage = async () => {
-    await basePage.visit("http://en.wikipedia.org/");
+    await basePage.visit("/");
   };
   const searchBar = createSearchBar(page);
   const resultPage = (title: string) => createResultPage(page, title);
