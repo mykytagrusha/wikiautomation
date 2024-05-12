@@ -77,7 +77,7 @@ test.describe("Search Functionality Tests", () => {
     });
   });
 
-  test("should search show the result from nonEnglish language ", async ({
+  test("should search convert result to other languages automatically ", async ({
     wikiPage,
     page,
   }) => {

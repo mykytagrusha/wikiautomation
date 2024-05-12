@@ -30,7 +30,8 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: "http://en.wikipedia.org/",
-
+    screenshot: "on",
+    video: { mode: "on", size: { width: 1280, height: 720 } },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
